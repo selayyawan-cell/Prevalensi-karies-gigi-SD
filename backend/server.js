@@ -14,8 +14,7 @@ require('dotenv').config();
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-
-// Database Connection Pool (Lebih stabil untuk Vercel Serverless)
+// Database Connection Pool (WAJIB untuk Vercel)
 const db = mysql.createPool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT || 4000,
@@ -30,16 +29,15 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
-// Test koneksi untuk Pool (Bukan db.connect)
+// Test koneksi untuk Pool (BUKAN db.connect)
 db.getConnection((err, connection) => {
     if (err) {
         console.error('❌ Gagal koneksi ke MySQL:', err.message);
     } else {
         console.log('✅ TERHUBUNG KE MYSQL (POOL)');
-        connection.release(); // Kembalikan koneksi ke pool setelah dites
+        connection.release(); 
     }
 });
-
 // Middleware Auth
 const verifyToken = (req, res, next) => {
     const token = req.headers['authorization'];
