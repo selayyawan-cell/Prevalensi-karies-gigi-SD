@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import Dashboard from './Dashboard.jsx'
 import Dashboard2 from './Dashboard2.jsx'
-import Login from './Login.jsx'
+import Login from './login.jsx'
 import GantiPassword from './GantiPassword.jsx'
 import PublicDashboard from './PublicDashboard.jsx' // ✅ TAMBAHKAN INI
 import './index.css'
