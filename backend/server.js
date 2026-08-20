@@ -15,7 +15,7 @@ app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-// Database Connection Pool (lebih stabil untuk serverless)
+// Database Connection Pool (Lebih stabil untuk Vercel Serverless)
 const db = mysql.createPool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT || 4000,
@@ -27,33 +27,17 @@ const db = mysql.createPool({
     },
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0,
-    enableKeepAlive: true,
-    keepAliveInitialDelay: 0
+    queueLimit: 0
 });
-// Helper untuk query yang lebih mudah
-const query = (sql, params) => {
-    return new Promise((resolve, reject) => {
-        db.query(sql, params, (err, results) => {
-            if (err) reject(err);
-            else resolve(results);
-        });
-    });
-};
 
-// Test koneksi
+// Test koneksi untuk Pool (Bukan db.connect)
 db.getConnection((err, connection) => {
     if (err) {
         console.error('❌ Gagal koneksi ke MySQL:', err.message);
     } else {
-        console.log('✅ TERHUBUNG KE MYSQL');
-        connection.release();
+        console.log('✅ TERHUBUNG KE MYSQL (POOL)');
+        connection.release(); // Kembalikan koneksi ke pool setelah dites
     }
-});
-
-db.connect((err) => {
-    if (err) console.error('❌ Gagal koneksi ke MySQL:', err.message);
-    else console.log('✅ TERHUBUNG KE MYSQL');
 });
 
 // Middleware Auth
