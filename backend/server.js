@@ -232,6 +232,12 @@ app.get('/api/detail-responden/:id', (req, res) => {
     });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(` Server berjalan di http://localhost:${PORT}`);
-});
+   // Jalankan server hanya jika di laptop lokal (bukan di Vercel)
+   if (process.env.NODE_ENV !== 'production') {
+       app.listen(PORT, '0.0.0.0', () => {
+           console.log(` Server berjalan di http://localhost:${PORT}`);
+       });
+   }
+
+   // Export aplikasi agar bisa dibaca oleh Vercel (Serverless)
+   module.exports = app;
