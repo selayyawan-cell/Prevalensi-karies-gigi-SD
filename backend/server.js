@@ -8,14 +8,15 @@ const jwt = require('jsonwebtoken');
 const app = express();
 const PORT = 3001;
 const JWT_SECRET = 'kunci_rahasia_karies_gigi_2026';
+require('dotenv').config();
 
 // Middleware
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Authorization'] }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-// Database Connection
-const db = mysql.createConnection({
+// Database Connection Pool (lebih stabil untuk serverless)
+const db = mysql.createPool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT || 4000,
     user: process.env.DB_USER,
@@ -23,6 +24,30 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME || 'test',
     ssl: {
         rejectUnauthorized: true
+    },
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0
+});
+// Helper untuk query yang lebih mudah
+const query = (sql, params) => {
+    return new Promise((resolve, reject) => {
+        db.query(sql, params, (err, results) => {
+            if (err) reject(err);
+            else resolve(results);
+        });
+    });
+};
+
+// Test koneksi
+db.getConnection((err, connection) => {
+    if (err) {
+        console.error('❌ Gagal koneksi ke MySQL:', err.message);
+    } else {
+        console.log('✅ TERHUBUNG KE MYSQL');
+        connection.release();
     }
 });
 
