@@ -16,14 +16,14 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Database Connection
 const db = mysql.createConnection({
-    host: '127.0.0.1',
-    port: 3307,
-    user: 'root',
-    password: '',
-    database: 'db_karies_gigi',
-    connectTimeout: 60000,
-    multipleStatements: true,
-    charset: 'utf8mb4'
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 4000,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME || 'test',
+    ssl: {
+        rejectUnauthorized: true
+    }
 });
 
 db.connect((err) => {
