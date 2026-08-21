@@ -1,14 +1,12 @@
-// ============================================
-// 🔹 KONFIGURASI API URL
-// ============================================
+// Hardcode URL backend (untuk production)
+export const API_URL = 'https://prevalensi-karies-gigi-sd.vercel.app';
 
+// Atau jika menggunakan axios:
+import axios from 'axios';
 
-const IP_ADDRESS = '192.168.88.184';  
-
-export const API_URL = `http://${IP_ADDRESS}:3001/api`;
-export const API_URL_LOCAL = 'http://localhost:3001/api';
-
-export const getApiUrl = () => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    return isMobile ? API_URL : API_URL_LOCAL;
-};
+export const api = axios.create({
+  baseURL: 'https://prevalensi-karies-gigi-sd.vercel.app',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
