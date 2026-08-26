@@ -29,7 +29,7 @@ const GantiPassword = () => {
 
         try {
             await axios.post(
-                `${API_URL}/change-password`,
+                `${API_URL}/api/change-password`,
                 { oldPassword, newPassword },
                 { headers: { Authorization: token } }
             );
