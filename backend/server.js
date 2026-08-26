@@ -82,17 +82,40 @@ app.post('/api/change-password', verifyToken, async (req, res) => {
 });
 
 app.get('/api/reset-admin', async (req, res) => {
+    const username = 'admin'; // ✅ TAMBAHKAN INI
     const hashedPassword = await bcrypt.hash('admin123', 10);
-    db.query(`SELECT * FROM users WHERE username = 'admin'`, (err, results) => {
+    
+    db.query("SELECT * FROM users WHERE username = ?", [username], (err, results) => {
+        // 1. CEK ERROR TERLEBIH DAHULU
+        if (err) {
+            console.error("❌ Error Database:", err.message);
+            return res.status(500).json({ error: err.message });
+        }
+        
+        // 2. LANJUTKAN PROSES RESET/UPDATE
+        // (Tambahkan kode Anda di sini untuk update password atau insert admin)
         if (results.length > 0) {
-            db.query(`UPDATE users SET password = ? WHERE username = 'admin'`, [hashedPassword], () => res.json({ message: 'Reset berhasil' }));
+            // Update password jika admin sudah ada
+            db.query("UPDATE users SET password = ? WHERE username = ?", [hashedPassword, username], (err) => {
+                if (err) {
+                    console.error("❌ Error Update:", err.message);
+                    return res.status(500).json({ error: err.message });
+                }
+                res.json({ pesan: "Reset berhasil" });
+            });
         } else {
-            db.query(`INSERT INTO users (username, password, nama_lengkap, role) VALUES ('admin', ?, 'Super Admin', 'admin')`, [hashedPassword], () => res.json({ message: 'Admin dibuat' }));
+            // Insert admin baru
+            db.query("INSERT INTO users (username, password, nama_lengkap, role) VALUES (?, ?, ?, ?)", 
+                [username, hashedPassword, 'Super Admin', 'admin'], (err) => {
+                if (err) {
+                    console.error("❌ Error Insert:", err.message);
+                    return res.status(500).json({ error: err.message });
+                }
+                res.json({ pesan: "Admin dibuat" });
+            });
         }
     });
-});
-
-// --- DATA ENDPOINTS (DENGAN FILTER TAHUN) ---
+}); // ← JANGAN LUPA TUTUP INI!
 app.post('/api/simpan-data', verifyToken, (req, res) => {
     const { responden, gigiList } = req.body;
     if (!responden.nomor || !gigiList || gigiList.length === 0) return res.status(400).json({ message: 'Data tidak lengkap' });

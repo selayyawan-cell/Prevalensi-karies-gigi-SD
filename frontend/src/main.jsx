@@ -5,7 +5,7 @@ import Dashboard from './Dashboard.jsx'
 import Dashboard2 from './Dashboard2.jsx'
 import Login from './login.jsx'
 import GantiPassword from './GantiPassword.jsx'
-import PublicDashboard from './PublicDashboard.jsx' // ✅ TAMBAHKAN INI
+import PublicDashboard from './PublicDashboard.jsx' 
 import './index.css'
 
 const currentPath = window.location.pathname;
