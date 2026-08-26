@@ -3,7 +3,7 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://prevalensi-karies-gigi-
 
 // Fungsi helper untuk fetch API
 export const apiFetch = async (endpoint, options = {}) => {
-  const response = await fetch(`${API_URL}${endpoint}`, {
+  const response = await fetch   `${API_URL}/api/${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
       // Tambahkan token jika perlu:

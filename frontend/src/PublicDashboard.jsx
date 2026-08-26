@@ -23,9 +23,9 @@ const PublicDashboard = () => {
             setError(null);
             
             const [statRes, kelasRes, prevalensiRes] = await Promise.all([
-                axios.get(`${API_URL}/statistik-total`),
-                axios.get(`${API_URL}/statistik-per-kelas`),
-                axios.get(`${API_URL}/prevalensi-karies`)
+                axios.get   `${API_URL}/api//api/statistik-total`),
+                axios.get   `${API_URL}/api//api/statistik-per-kelas`),
+                axios.get   `${API_URL}/api//api/prevalensi-karies`)
             ]);
             
             setStatistik(statRes.data || {});
