@@ -26,7 +26,7 @@ const Dashboard2 = () => {
             setLoading(true);
             setError(null);
             
-            const allRes = await axios.get   `${API_URL}/api//semua-data`);
+            const allRes = await axios.get(`${API_URL}/api/semua-data`);
             
             setSemuaResponden(allRes.data || []);
             setTotalResponden(allRes.data.length || 0);
@@ -43,7 +43,7 @@ const Dashboard2 = () => {
             setSelectedResponden(responden);
             setShowModal(true);
             
-            const response = await axios.get   `${API_URL}/api//detail-responden/${responden.id_responden}`);
+            const response = await axios.get(`${API_URL}/api/detail-responden/${responden.id_responden}`);
             setDetailData(response.data);
         } catch (err) {
             console.error('❌ Error fetching detail:', err);
