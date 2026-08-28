@@ -230,7 +230,7 @@ const Dashboard = () => {
 
             <div className="footer" style={styles.footer}>
                 <button className="btn-kembali" style={{...styles.btnKembali, marginRight: '10px'}} onClick={() => window.location.href = '/dashboard2'}>📊 Dashboard Distribusi →</button>
-                <button className="btn-kembali" style={styles.btnKembali} onClick={() => window.location.href = 'http://localhost:5173'}>← Kembali ke Form Input</button>
+                <button className="btn-kembali" style={styles.btnKembali} onClick={() => window.location.href = '/'}>← Kembali ke Form Input</button>
             </div>
             <BottomNav />
         </div>

@@ -441,7 +441,7 @@ const Dashboard2 = () => {
 
             <div className="footer" style={styles.footer}>
                 <button className="btn-kembali" style={{...styles.btnKembali, marginRight: '10px'}} onClick={() => window.location.href = '/dashboard'}>← Dashboard 1</button>
-                <button className="btn-kembali" style={styles.btnKembali} onClick={() => window.location.href = 'http://localhost:5173'}>🏠 Beranda</button>
+                <button className="btn-kembali" style={styles.btnKembali} onClick={() => window.location.href = '/'}>🏠 Beranda</button>
             </div>
 
             <BottomNav />
