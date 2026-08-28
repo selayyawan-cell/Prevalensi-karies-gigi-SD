@@ -34,10 +34,10 @@ const Dashboard = () => {
             const yearParam = (selectedYear === 'all' || !selectedYear) ? '' : `?year=${selectedYear}`;
 
             const [dataRes, statRes, kelasRes, prevalensiRes] = await Promise.all([
-                axios.get   `${API_URL}/api//api/semua-data${yearParam}`),
-                axios.get   `${API_URL}/api//api/statistik-total${yearParam}`),
-                axios.get   `${API_URL}/api//api/statistik-per-kelas${yearParam}`),
-                axios.get   `${API_URL}/api//api/prevalensi-karies${yearParam}`)
+                axios.get(`${API_URL}/api/semua-data${yearParam}`),
+                axios.get(`${API_URL}/api/statistik-total${yearParam}`),
+                axios.get(`${API_URL}/api/statistik-per-kelas${yearParam}`),
+                axios.get(`${API_URL}/api/prevalensi-karies${yearParam}`)
             ]);
             
             setSemuaData(dataRes.data || []);

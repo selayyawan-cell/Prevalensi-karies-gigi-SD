@@ -49,7 +49,7 @@ const App = () => {
         
         setLoading(true);
         try {
-            await axios.post   `${API_URL}/api//simpan-data`, {responden, gigiList});
+            await axios.post(`${API_URL}/api/simpan-data`, {responden, gigiList});
             setPesan({text: '✅ Data berhasil disimpan!', type: 'success'});
             setResponden({nomor: '', umur: '', kelas: 'IV A', golongan_darah: 'O'});
             setGigiList([]);
