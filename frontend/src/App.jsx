@@ -41,7 +41,7 @@ const App = () => {
         }
     };
 
-    const simpanData = async () => {
+        const simpanData = async () => {
         if (!responden.nomor || !responden.umur || gigiList.length < 28) {
             setPesan({text: '⚠️ Lengkapi semua data!', type: 'error'});
             return;
@@ -49,12 +49,37 @@ const App = () => {
         
         setLoading(true);
         try {
-            await axios.post(`${API_URL}/api/simpan-data`, {responden, gigiList});
+            // 1. Ambil token dari localStorage (disimpan saat login)
+            const token = localStorage.getItem('token');
+            
+            // 2. Buat konfigurasi header untuk menyertakan token
+            const config = {
+                headers: {
+                    'Authorization': token
+                }
+            };
+
+            // 3. Kirim request dengan config header
+            await axios.post(`${API_URL}/api/simpan-data`, { responden, gigiList }, config);
+            
             setPesan({text: '✅ Data berhasil disimpan!', type: 'success'});
-            setResponden({nomor: '', umur: '', kelas: 'IV A', golongan_darah: 'O'});
+            
+            // Reset form setelah berhasil
+            setResponden({ 
+                nomor: '', 
+                umur: '', 
+                kelas: 'IV A', 
+                golongan_darah: 'O',
+                frekuensi_sikat: '2',
+                waktu_sikat: 'Pagi & Malam',
+                kebiasaan_makan: 'Seimbang'
+            });
             setGigiList([]);
+            
         } catch (err) {
-            setPesan({text: '❌ Gagal: ' + err.message, type: 'error'});
+            // Tampilkan pesan error yang spesifik dari backend jika ada
+            const errorMsg = err.response?.data?.message || err.message;
+            setPesan({text: '❌ Gagal: ' + errorMsg, type: 'error'});
         } finally {
             setLoading(false);
         }
