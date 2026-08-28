@@ -4,17 +4,24 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
+// ✅ 1. BUAT INSTANCE APP TERLEBIH DAHULU
 const app = express();
 const PORT = 3001;
 const JWT_SECRET = 'kunci_rahasia_karies_gigi_2026';
-require('dotenv').config();
 
-// Middleware
-app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], allowedHeaders: ['Content-Type', 'Authorization'] }));
+// ✅ 2. AKTIFKAN CORS & MIDDLEWARE SETELAH APP DIBUAT
+app.use(cors({
+  origin: '*', // Izinkan semua domain (Netlify, Vercel, localhost)
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-// Database Connection Pool (WAJIB untuk Vercel)
+
+// ✅ 3. DATABASE CONNECTION POOL (WAJIB untuk Vercel)
 const db = mysql.createPool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT || 4000,
@@ -29,7 +36,7 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
-// Test koneksi untuk Pool (BUKAN db.connect)
+// Test koneksi untuk Pool
 db.getConnection((err, connection) => {
     if (err) {
         console.error('❌ Gagal koneksi ke MySQL:', err.message);
@@ -38,7 +45,8 @@ db.getConnection((err, connection) => {
         connection.release(); 
     }
 });
-// Middleware Auth
+
+// ✅ 4. MIDDLEWARE AUTH
 const verifyToken = (req, res, next) => {
     const token = req.headers['authorization'];
     if (!token) return res.status(403).json({ message: 'Akses ditolak.' });
@@ -82,40 +90,29 @@ app.post('/api/change-password', verifyToken, async (req, res) => {
 });
 
 app.get('/api/reset-admin', async (req, res) => {
-    const username = 'admin'; // ✅ TAMBAHKAN INI
+    const username = 'admin';
     const hashedPassword = await bcrypt.hash('admin123', 10);
     
     db.query("SELECT * FROM users WHERE username = ?", [username], (err, results) => {
-        // 1. CEK ERROR TERLEBIH DAHULU
         if (err) {
             console.error("❌ Error Database:", err.message);
             return res.status(500).json({ error: err.message });
         }
-        
-        // 2. LANJUTKAN PROSES RESET/UPDATE
-        // (Tambahkan kode Anda di sini untuk update password atau insert admin)
         if (results.length > 0) {
-            // Update password jika admin sudah ada
             db.query("UPDATE users SET password = ? WHERE username = ?", [hashedPassword, username], (err) => {
-                if (err) {
-                    console.error("❌ Error Update:", err.message);
-                    return res.status(500).json({ error: err.message });
-                }
+                if (err) return res.status(500).json({ error: err.message });
                 res.json({ pesan: "Reset berhasil" });
             });
         } else {
-            // Insert admin baru
             db.query("INSERT INTO users (username, password, nama_lengkap, role) VALUES (?, ?, ?, ?)", 
                 [username, hashedPassword, 'Super Admin', 'admin'], (err) => {
-                if (err) {
-                    console.error("❌ Error Insert:", err.message);
-                    return res.status(500).json({ error: err.message });
-                }
+                if (err) return res.status(500).json({ error: err.message });
                 res.json({ pesan: "Admin dibuat" });
             });
         }
     });
-}); // ← JANGAN LUPA TUTUP INI!
+});
+
 app.post('/api/simpan-data', verifyToken, (req, res) => {
     const { responden, gigiList } = req.body;
     if (!responden.nomor || !gigiList || gigiList.length === 0) return res.status(400).json({ message: 'Data tidak lengkap' });
@@ -159,13 +156,8 @@ app.get('/api/semua-data', (req, res) => {
 
 app.get('/api/statistik-total', (req, res) => {
     const { year } = req.query;
-    
-    // ✅ LOG DEBUG: Kita akan lihat ini di terminal VS Code
     console.log(' PARAMETER TAHUN DARI URL:', year);
-    
     const yearCondition = year && year !== 'all' ? `AND YEAR(p.tanggal_pemeriksaan) = '${year}'` : '';
-    
-    // ✅ LOG DEBUG: Kita akan lihat ini di terminal VS Code
     console.log('🔍 KONDISI SQL YANG DIBUAT:', yearCondition);
 
     const sql = `
@@ -262,12 +254,11 @@ app.get('/api/detail-responden/:id', (req, res) => {
     });
 });
 
-   // Jalankan server hanya jika di laptop lokal (bukan di Vercel)
-   if (process.env.NODE_ENV !== 'production') {
-       app.listen(PORT, '0.0.0.0', () => {
-           console.log(` Server berjalan di http://localhost:${PORT}`);
-       });
-   }
+// ✅ 5. JALANKAN SERVER & EXPORT
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`✅ Server berjalan di http://localhost:${PORT}`);
+    });
+}
 
-   // Export aplikasi agar bisa dibaca oleh Vercel (Serverless)
-   module.exports = app;
+module.exports = app;
