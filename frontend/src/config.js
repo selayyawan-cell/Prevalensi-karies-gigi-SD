@@ -1,5 +1,5 @@
 // Hardcode URL backend (untuk production)
-export const API_URL = 'https://prevalensi-karies-gigi-sd.vercel.app';
+   export const API_URL = import.meta.env.VITE_API_URL || 'https://prevalensi-karies-gigi-sd.vercel.app';
 
 // Atau jika menggunakan axios:
 import axios from 'axios';

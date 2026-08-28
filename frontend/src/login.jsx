@@ -15,7 +15,7 @@ const Login = () => {
         setError('');
 
         try {
-            const res = await axios.post   `${API_URL}/api//api/login`, { username, password });
+            const res = await axios.post(`${API_URL}/api/login`, { username, password });
             
             // Simpan token
             setSession(res.data.token, res.data.user);
@@ -23,7 +23,7 @@ const Login = () => {
             // Redirect ke halaman utama
             window.location.href = '/';
         } catch (err) {
-            setError(err.response?.data?.message || 'Gagal login. Cek koneksi server.');
+               setError(err.response?.data?.message || 'TES UPDATE BERHASIL 12345!');
         } finally {
             setLoading(false);
         }
