@@ -1,0 +1,13 @@
+[build]
+  # Masuk ke folder frontend dulu
+  base = "frontend"
+  # Perintah untuk build
+  command = "npm run build"
+  # Hasil build ada di folder dist (di dalam frontend)
+  publish = "dist"
+
+# Ini WAJIB untuk aplikasi React/Vite agar tidak error 404 saat refresh atau buka link langsung
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
